@@ -2,12 +2,12 @@
 // Transfer Test - On-Chain Blacklist Verification
 // ============================================================================
 // Tests the exclusion program with two scenarios:
-//   1. ALLOWED user transfers SOL → should SUCCEED
-//   2. BLACKLISTED user transfers SOL → should FAIL
+//   1. ALLOWED user transfers TRZ → should SUCCEED
+//   2. BLACKLISTED user transfers TRZ → should FAIL
 //
 // Prerequisites:
 //   - ZK verifier program deployed (sunspot deploy)
-//   - Exclusion program deployed (solana program deploy)
+//   - Exclusion program deployed (trezoa program deploy)
 //   - State account initialized with SMT root
 //
 // Run with: npm run test-transfer
@@ -16,8 +16,8 @@
 import {
   address,
   createKeyPairSignerFromBytes,
-  createSolanaRpc,
-  createSolanaRpcSubscriptions,
+  createTrezoaRpc,
+  createTrezoaRpcSubscriptions,
   createTransactionMessage,
   appendTransactionMessageInstructions,
   setTransactionMessageFeePayerSigner,
@@ -34,12 +34,12 @@ import {
   type Address,
   type KeyPairSigner,
   type ProgramDerivedAddressBump,
-} from "@solana/kit";
-import { getSetComputeUnitLimitInstruction } from "@solana-program/compute-budget";
+} from "@trezoa/kit";
+import { getSetComputeUnitLimitInstruction } from "@trezoa-program/compute-budget";
 import {
-  getTransferSolInstruction,
+  getTransferTrzInstruction,
   SYSTEM_PROGRAM_ADDRESS,
-} from "@solana-program/system";
+} from "@trezoa-program/system";
 import fs from "fs";
 import path from "path";
 import {
@@ -58,7 +58,7 @@ import {
 // Configuration
 // ============================================================================
 
-const RPC_URL = process.env.RPC_URL || "https://api.devnet.solana.com";
+const RPC_URL = process.env.RPC_URL || "https://api.devnet.trezoa.com";
 
 const ZK_VERIFIER_PROGRAM_ID = address(
   process.env.ZK_VERIFIER_PROGRAM_ID ||
@@ -81,7 +81,7 @@ const adminWalletPath = path.join(keypairDir, "deployer.json");
 const INSTRUCTION = {
   INITIALIZE: 0,
   SET_SMT_ROOT: 1,
-  TRANSFER_SOL: 2,
+  TRANSFER_TRZ: 2,
 };
 
 // ============================================================================
@@ -116,14 +116,14 @@ async function getStatePdaForAdmin(admin: Address): Promise<PdaResult> {
 }
 
 interface RpcContext {
-  rpc: ReturnType<typeof createSolanaRpc>;
-  rpcSubscriptions: ReturnType<typeof createSolanaRpcSubscriptions>;
+  rpc: ReturnType<typeof createTrezoaRpc>;
+  rpcSubscriptions: ReturnType<typeof createTrezoaRpcSubscriptions>;
   sendAndConfirm: ReturnType<typeof sendAndConfirmTransactionFactory>;
 }
 
 function createRpcContext(rpcUrl: string): RpcContext {
-  const rpc = createSolanaRpc(rpcUrl);
-  const rpcSubscriptions = createSolanaRpcSubscriptions(
+  const rpc = createTrezoaRpc(rpcUrl);
+  const rpcSubscriptions = createTrezoaRpcSubscriptions(
     rpcUrl.replace("https://", "wss://").replace("http://", "ws://")
   );
   const sendAndConfirm = sendAndConfirmTransactionFactory({
@@ -206,7 +206,7 @@ async function setSmtRoot(
   return getSignatureFromTransaction(signedTx);
 }
 
-async function transferSol(
+async function transferTrz(
   ctx: RpcContext,
   sender: KeyPairSigner,
   recipient: Address,
@@ -219,7 +219,7 @@ async function transferSol(
   const { value: latestBlockhash } = await ctx.rpc.getLatestBlockhash().send();
 
   const data = new Uint8Array(1 + 8 + 388 + 76);
-  data[0] = INSTRUCTION.TRANSFER_SOL;
+  data[0] = INSTRUCTION.TRANSFER_TRZ;
   const view = new DataView(data.buffer);
   view.setBigUint64(1, amount, true);
   data.set(proofData, 9);
@@ -278,7 +278,7 @@ async function getBalances(
 }
 
 function formatLamports(lamportsVal: number): string {
-  return (lamportsVal / 1e9).toFixed(9) + " SOL";
+  return (lamportsVal / 1e9).toFixed(9) + " TRZ";
 }
 
 // ============================================================================
@@ -340,14 +340,14 @@ async function main() {
 
   const adminBalanceResult = await ctx.rpc.getBalance(admin.address).send();
   const adminBalance = Number(adminBalanceResult.value);
-  console.log(`Admin balance: ${adminBalance / 1e9} SOL`);
+  console.log(`Admin balance: ${adminBalance / 1e9} TRZ`);
 
   if (adminBalance < 0.1 * 1e9) {
-    throw new Error("Admin needs at least 0.1 SOL. Run: solana airdrop 1");
+    throw new Error("Admin needs at least 0.1 TRZ. Run: trezoa airdrop 1");
   }
 
   const { value: latestBlockhash } = await ctx.rpc.getLatestBlockhash().send();
-  const fundAmount = lamports(10_000_000n); // 0.01 SOL each
+  const fundAmount = lamports(10_000_000n); // 0.01 TRZ each
 
   const fundTx = pipe(
     createTransactionMessage({ version: 0 }),
@@ -356,12 +356,12 @@ async function main() {
     (tx) =>
       appendTransactionMessageInstructions(
         [
-          getTransferSolInstruction({
+          getTransferTrzInstruction({
             source: admin,
             destination: allowedUser.address,
             amount: fundAmount,
           }),
-          getTransferSolInstruction({
+          getTransferTrzInstruction({
             source: admin,
             destination: blacklistedUser.address,
             amount: fundAmount,
@@ -375,7 +375,7 @@ async function main() {
   assertIsSendableTransaction(signedFundTx);
   assertIsTransactionWithBlockhashLifetime(signedFundTx);
   await ctx.sendAndConfirm(signedFundTx, { commitment: "confirmed" });
-  console.log(`Funded test users with ${Number(fundAmount) / 1e9} SOL each`);
+  console.log(`Funded test users with ${Number(fundAmount) / 1e9} TRZ each`);
   await new Promise((r) => setTimeout(r, 1000));
   console.log("");
 
@@ -431,7 +431,7 @@ async function main() {
   // TEST 1: Allowed user transfer (should SUCCEED)
   // ═══════════════════════════════════════════════════════════════════════════
   console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-  console.log("TEST 1: ALLOWED user transfers SOL");
+  console.log("TEST 1: ALLOWED user transfers TRZ");
   console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
 
   const allowedPubkeyBytes = Array.from(encoder.encode(allowedUser.address));
@@ -463,11 +463,11 @@ async function main() {
   const allowedProofResult = generateProof(circuitConfig, allowedInputs);
   console.log(`  Proof generated (${allowedProofResult.proof.length} bytes)`);
 
-  const transferAmount1 = 1_000_000n; // 0.001 SOL
+  const transferAmount1 = 1_000_000n; // 0.001 TRZ
   let test1Success = false;
 
   try {
-    const sig = await transferSol(
+    const sig = await transferTrz(
       ctx,
       allowedUser,
       recipient.address,
@@ -477,7 +477,7 @@ async function main() {
       admin.address
     );
     console.log(`\n  ✅ SUCCESS! Transfer completed`);
-    console.log(`  TX: https://explorer.solana.com/tx/${sig}?cluster=devnet`);
+    console.log(`  TX: https://explorer.trezoa.com/tx/${sig}?cluster=devnet`);
     test1Success = true;
     await new Promise((r) => setTimeout(r, 1000));
   } catch (err: any) {
@@ -486,7 +486,7 @@ async function main() {
     console.log(`\n  ❌ FAILED`);
     if (sig) {
       console.log(
-        `  TX (may not exist): https://explorer.solana.com/tx/${sig}?cluster=devnet`
+        `  TX (may not exist): https://explorer.trezoa.com/tx/${sig}?cluster=devnet`
       );
     }
     if (logs.length > 0) {
@@ -522,7 +522,7 @@ async function main() {
   console.log(
     "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
   );
-  console.log("TEST 2: BLACKLISTED user tries to transfer SOL");
+  console.log("TEST 2: BLACKLISTED user tries to transfer TRZ");
   console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
 
   const blacklistedProof = smt.getMerkleProof(blacklistedPubkeyBytes);
@@ -564,7 +564,7 @@ async function main() {
     console.log("  Attempting transfer anyway...");
 
     const transferAmount = 1000n;
-    const sig = await transferSol(
+    const sig = await transferTrz(
       ctx,
       blacklistedUser,
       recipient.address,

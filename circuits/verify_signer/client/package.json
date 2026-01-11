@@ -1,13 +1,13 @@
 {
-  "name": "@solana-noir-examples/verify-signer-client",
+  "name": "@trezoa-noir-examples/verify-signer-client",
   "version": "1.0.0",
   "type": "module",
   "scripts": {
     "verify": "tsx verify.ts"
   },
   "dependencies": {
-    "@solana/kit": "^5.1.0",
-    "@solana-noir-examples/lib": "file:../../../lib",
+    "@trezoa/kit": "^5.1.0",
+    "@trezoa-noir-examples/lib": "file:../../../lib",
     "circomlibjs": "^0.1.7",
     "ws": "^8.18.0"
   },

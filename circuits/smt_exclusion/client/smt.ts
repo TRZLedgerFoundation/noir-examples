@@ -8,11 +8,11 @@
 //   3. Compute roots that can be published on-chain
 //
 // The SMT is "sparse" - only stores non-empty leaves, not all 2^254 positions.
-// Uses Circom-compatible Poseidon hash (same as Solana's sol_poseidon syscall).
+// Uses Circom-compatible Poseidon hash (same as Trezoa's sol_poseidon syscall).
 // ============================================================================
 
 import { buildPoseidon, type Poseidon } from "circomlibjs";
-import { address, getAddressEncoder, type Address } from "@solana/kit";
+import { address, getAddressEncoder, type Address } from "@trezoa/kit";
 
 // Global poseidon instance (initialized lazily)
 let poseidonInstance: Poseidon | null = null;
@@ -68,7 +68,7 @@ export function pubkeyToIndex(pubkey: number[]): bigint {
 // Utility Functions
 // ============================================================================
 
-/** Convert Solana base58 address to byte array */
+/** Convert Trezoa base58 address to byte array */
 export function pubkeyToBytes(pubkey: string | Address): number[] {
   const addr = typeof pubkey === "string" ? address(pubkey) : pubkey;
   const encoder = getAddressEncoder();
@@ -255,7 +255,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
 
   const smt = new SparseMerkleTree();
 
-  // Example Solana pubkeys (these are arbitrary examples)
+  // Example Trezoa pubkeys (these are arbitrary examples)
   const blacklistedPubkey = pubkeyToBytes(
     "FsJ3A3u2vn5cTVofAjvy6y5kwABJAqYWpe4975bi2epH"
   );

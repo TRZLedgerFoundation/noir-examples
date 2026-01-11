@@ -6,13 +6,13 @@ import {
   generateWitness,
   generateGroth16Proof,
   readProofFiles,
-} from "@solana-noir-examples/lib/proof";
+} from "@trezoa-noir-examples/lib/proof";
 
 export {
   type CircuitConfig,
   type ProofResult,
   createInstructionData,
-} from "@solana-noir-examples/lib/proof";
+} from "@trezoa-noir-examples/lib/proof";
 
 export interface SmtExclusionInputs {
   smt_root: string;

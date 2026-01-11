@@ -11,7 +11,7 @@ default:
 # 1. just install-all       - Install dependencies
 # 2. just test-all          - Run circuit unit tests
 # 3. just verify-all        - Verify proofs on-chain (uses pre-deployed verifiers)
-# 4. just test-transfer-smt - Integration test: ZK-gated SOL transfer
+# 4. just test-transfer-smt - Integration test: ZK-gated TRZ transfer
 
 # Install all dependencies (run this first!)
 install-all: install-lib install-one install-signer install-smt
@@ -70,7 +70,7 @@ setup-one: compile-one execute-one
     cd circuits/one && sunspot setup target/one.ccs
     cd circuits/one && sunspot prove target/one.json target/one.gz target/one.ccs target/one.pk
 
-# Build Solana verifier program
+# Build Trezoa verifier program
 build-verifier-one:
     cd circuits/one && sunspot deploy target/one.vk
 
@@ -113,7 +113,7 @@ setup-signer: compile-signer execute-signer
     cd circuits/verify_signer && sunspot setup target/verify_signer.ccs
     cd circuits/verify_signer && sunspot prove target/verify_signer.json target/verify_signer.gz target/verify_signer.ccs target/verify_signer.pk
 
-# Build Solana verifier program
+# Build Trezoa verifier program
 build-verifier-signer:
     cd circuits/verify_signer && sunspot deploy target/verify_signer.vk
 
@@ -146,7 +146,7 @@ verify-smt program_id="548u4SFWZMaRWZQqdyAgm66z7VRYtNHHF2sr7JTBXbwN":
     cd circuits/smt_exclusion/client && pnpm run verify -- --program {{program_id}}
     git checkout circuits/smt_exclusion/Prover.toml 2>/dev/null || true
 
-# Integration test: verify proof + SOL transfer (requires deployed programs)
+# Integration test: verify proof + TRZ transfer (requires deployed programs)
 test-transfer-smt:
     cd circuits/smt_exclusion/client && pnpm run test-transfer
     git checkout circuits/smt_exclusion/Prover.toml 2>/dev/null || true
@@ -157,7 +157,7 @@ setup-smt: compile-smt execute-smt
     cd circuits/smt_exclusion && sunspot setup target/smt_exclusion.ccs
     cd circuits/smt_exclusion && sunspot prove target/smt_exclusion.json target/smt_exclusion.gz target/smt_exclusion.ccs target/smt_exclusion.pk
 
-# Build Solana verifier program
+# Build Trezoa verifier program
 build-verifier-smt:
     cd circuits/smt_exclusion && sunspot deploy target/smt_exclusion.vk
 

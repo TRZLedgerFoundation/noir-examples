@@ -1,7 +1,7 @@
 import {
   createKeyPairSignerFromBytes,
-  createSolanaRpc,
-  createSolanaRpcSubscriptions,
+  createTrezoaRpc,
+  createTrezoaRpcSubscriptions,
   createTransactionMessage,
   appendTransactionMessageInstructions,
   setTransactionMessageFeePayerSigner,
@@ -13,8 +13,8 @@ import {
   getSignatureFromTransaction,
   lamports,
   type Address,
-} from "@solana/kit";
-import { getSetComputeUnitLimitInstruction } from "@solana-program/compute-budget";
+} from "@trezoa/kit";
+import { getSetComputeUnitLimitInstruction } from "@trezoa-program/compute-budget";
 import fs from "fs";
 
 export interface VerifyConfig {
@@ -40,17 +40,17 @@ export async function verifyOnChain(
   console.log(`Wallet: ${wallet.address}`);
   console.log(`Program: ${config.programId}`);
 
-  const rpc = createSolanaRpc(config.rpcUrl);
-  const rpcSubscriptions = createSolanaRpcSubscriptions(
+  const rpc = createTrezoaRpc(config.rpcUrl);
+  const rpcSubscriptions = createTrezoaRpcSubscriptions(
     config.rpcUrl.replace("https://", "wss://").replace("http://", "ws://")
   );
   console.log(`RPC: ${config.rpcUrl}\n`);
 
   const balanceResult = await rpc.getBalance(wallet.address).send();
   const balance = balanceResult.value;
-  console.log(`Balance: ${Number(balance) / 1e9} SOL`);
+  console.log(`Balance: ${Number(balance) / 1e9} TRZ`);
   if (balance < lamports(10_000_000n)) {
-    throw new Error("Insufficient balance. Run: solana airdrop 1");
+    throw new Error("Insufficient balance. Run: trezoa airdrop 1");
   }
 
   const computeUnits = config.computeUnits ?? 500_000;
@@ -100,7 +100,7 @@ export function printTransactionResult(
   cluster: string = "devnet"
 ): void {
   console.log(
-    `\nTransaction: https://explorer.solana.com/tx/${sig}?cluster=${cluster}`
+    `\nTransaction: https://explorer.trezoa.com/tx/${sig}?cluster=${cluster}`
   );
 }
 

@@ -1,6 +1,6 @@
 # SMT Exclusion Proof
 
-Noir circuit that proves a Solana pubkey is **NOT** in a blacklist stored as a Sparse Merkle Tree. Verifiable on-chain via Groth16.
+Noir circuit that proves a Trezoa pubkey is **NOT** in a blacklist stored as a Sparse Merkle Tree. Verifiable on-chain via Groth16.
 
 ## Circuit
 
@@ -9,7 +9,7 @@ Noir circuit that proves a Solana pubkey is **NOT** in a blacklist stored as a S
 - `pubkey_hash` - Poseidon hash of the pubkey being checked
 
 **Private inputs:**
-- `pubkey` - 32-byte Solana pubkey
+- `pubkey` - 32-byte Trezoa pubkey
 - `siblings` - 254 sibling hashes (merkle path)
 - `leaf_value` - Value at leaf position (must be 0 for exclusion)
 
@@ -24,10 +24,10 @@ Noir circuit that proves a Solana pubkey is **NOT** in a blacklist stored as a S
 just install-smt           # Install client dependencies
 just test-smt              # Run circuit tests
 just prove-smt             # Compile + execute + generate proof
-just build-verifier-smt    # Build Solana verifier (.so)
+just build-verifier-smt    # Build Trezoa verifier (.so)
 
-# Deploy verifier to Solana devnet (manual step)
-solana program deploy circuits/smt_exclusion/target/smt_exclusion.so \
+# Deploy verifier to Trezoa devnet (manual step)
+trezoa program deploy circuits/smt_exclusion/target/smt_exclusion.so \
   --keypair circuits/smt_exclusion/keypair/deployer.json \
   --program-id circuits/smt_exclusion/target/smt_exclusion-keypair.json \
   --url devnet
@@ -35,7 +35,7 @@ solana program deploy circuits/smt_exclusion/target/smt_exclusion.so \
 # Verify proof on-chain
 just verify-smt <PROGRAM_ID>
 
-# Integration test with SOL transfers
+# Integration test with TRZ transfers
 just test-transfer-smt
 ```
 
@@ -54,12 +54,12 @@ sunspot prove target/smt_exclusion.json target/smt_exclusion.gz \
 
 # Build and deploy verifier
 sunspot deploy target/smt_exclusion.vk
-solana program deploy target/smt_exclusion.so
+trezoa program deploy target/smt_exclusion.so
 
 # Test client
 cd client && npm install
 npm run verify -- --program <PROGRAM_ID>
-npm run test-transfer  # Integration test with SOL transfers
+npm run test-transfer  # Integration test with TRZ transfers
 ```
 
 ## Files
@@ -70,7 +70,7 @@ npm run test-transfer  # Integration test with SOL transfers
 | `Prover.toml` | Test inputs |
 | `client/smt.ts` | TypeScript SMT implementation |
 | `client/verify.ts` | On-chain verification client |
-| `client/test-transfer.ts` | Integration test with SOL transfers |
+| `client/test-transfer.ts` | Integration test with TRZ transfers |
 | `on_chain_program/` | Rust program for gated transfers |
 
 ## Dependencies

@@ -1,8 +1,8 @@
 #![allow(unexpected_cfgs)]
 #![allow(deprecated)]
 
-use solana_poseidon::{hashv, Endianness, Parameters};
-use solana_program::{
+use trezoa_poseidon::{hashv, Endianness, Parameters};
+use trezoa_program::{
     account_info::{next_account_info, AccountInfo},
     entrypoint,
     entrypoint::ProgramResult,
@@ -14,11 +14,11 @@ use solana_program::{
     rent::Rent,
     sysvar::Sysvar,
 };
-use solana_system_interface::instruction as system_instruction;
+use trezoa_system_interface::instruction as system_instruction;
 
 // NOTE: This is a devnet example program ID. For production, deploy your own program
 // and update this ID. You can also override via environment-specific configuration.
-solana_program::declare_id!("4WvvKAwJ2hYRqaceZyyS3s51V68LbfGsXWut7gsGnqaZ");
+trezoa_program::declare_id!("4WvvKAwJ2hYRqaceZyyS3s51V68LbfGsXWut7gsGnqaZ");
 
 /// Custom errors - error code shown in logs as "Custom(N)"
 /// 0 = InvalidDataLength, 1 = InvalidStateAccount, etc.
@@ -55,7 +55,7 @@ impl From<ExclusionError> for ProgramError {
 /// NOTE: This is a devnet example. For production, deploy your own verifier via
 /// `sunspot deploy` and update this constant with the resulting program ID.
 pub const ZK_VERIFIER_PROGRAM_ID: Pubkey =
-    solana_program::pubkey!("548u4SFWZMaRWZQqdyAgm66z7VRYtNHHF2sr7JTBXbwN");
+    trezoa_program::pubkey!("548u4SFWZMaRWZQqdyAgm66z7VRYtNHHF2sr7JTBXbwN");
 
 /// State account size: 8 (discriminator) + 32 (admin) + 32 (smt_root) = 72 bytes
 pub const STATE_SIZE: usize = 8 + 32 + 32;
@@ -67,7 +67,7 @@ pub const STATE_DISCRIMINATOR: [u8; 8] = [0x73, 0x6d, 0x74, 0x5f, 0x72, 0x6f, 0x
 pub mod instruction {
     pub const INITIALIZE: u8 = 0;
     pub const SET_SMT_ROOT: u8 = 1;
-    pub const TRANSFER_SOL: u8 = 2;
+    pub const TRANSFER_TRZ: u8 = 2;
 }
 
 entrypoint!(process_instruction);
@@ -86,7 +86,7 @@ pub fn process_instruction(
         instruction::SET_SMT_ROOT => {
             process_set_smt_root(program_id, accounts, &instruction_data[1..])
         }
-        instruction::TRANSFER_SOL => process_transfer_sol(accounts, &instruction_data[1..]),
+        instruction::TRANSFER_TRZ => process_transfer_trz(accounts, &instruction_data[1..]),
         _ => Err(ProgramError::InvalidInstructionData),
     }
 }
@@ -191,7 +191,7 @@ fn process_set_smt_root(
     Ok(())
 }
 
-/// Transfer SOL after verifying exclusion proof
+/// Transfer TRZ after verifying exclusion proof
 ///
 /// Accounts:
 ///   0. [signer, writable] Sender (must prove NOT blacklisted)
@@ -204,7 +204,7 @@ fn process_set_smt_root(
 ///   - 8 bytes: amount (lamports)
 ///   - 388 bytes: ZK proof
 ///   - 76 bytes: public witness (must match smt_root from state + pubkey_hash from signer)
-fn process_transfer_sol(accounts: &[AccountInfo], data: &[u8]) -> ProgramResult {
+fn process_transfer_trz(accounts: &[AccountInfo], data: &[u8]) -> ProgramResult {
     // Expected data: 8 (amount) + 388 (proof) + 76 (witness) = 472 bytes
     if data.len() != 8 + 388 + 76 {
         msg!(
@@ -302,7 +302,7 @@ fn process_transfer_sol(accounts: &[AccountInfo], data: &[u8]) -> ProgramResult 
     invoke(&verify_ix, &[])?;
     msg!("Exclusion proof verified - sender is NOT blacklisted");
 
-    // Transfer SOL
+    // Transfer TRZ
     msg!("Transferring {} lamports to {}", amount, recipient.key);
     invoke(
         &system_instruction::transfer(sender.key, recipient.key, amount),

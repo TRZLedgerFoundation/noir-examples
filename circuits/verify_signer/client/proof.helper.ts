@@ -7,13 +7,13 @@ import {
   generateWitness,
   generateGroth16Proof,
   readProofFiles,
-} from "@solana-noir-examples/lib/proof";
+} from "@trezoa-noir-examples/lib/proof";
 
 export {
   type CircuitConfig,
   type ProofResult,
   createInstructionData,
-} from "@solana-noir-examples/lib/proof";
+} from "@trezoa-noir-examples/lib/proof";
 
 // Global poseidon instance (initialized lazily)
 let poseidonInstance: Poseidon | null = null;

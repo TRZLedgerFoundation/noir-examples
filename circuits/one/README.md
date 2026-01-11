@@ -4,7 +4,7 @@ A minimal Noir circuit demonstrating the full ZK pipeline from circuit to on-cha
 
 ## What It Does
 
-Proves that `x != y` without revealing the values. The simplest possible circuit for learning the Noir → Sunspot → Solana workflow.
+Proves that `x != y` without revealing the values. The simplest possible circuit for learning the Noir → Sunspot → Trezoa workflow.
 
 ## Quick Start
 
@@ -13,10 +13,10 @@ Proves that `x != y` without revealing the values. The simplest possible circuit
 just install-one        # Install client dependencies
 just test-one           # Run circuit tests
 just prove-one          # Compile + execute + generate proof
-just build-verifier-one # Build Solana verifier (.so)
+just build-verifier-one # Build Trezoa verifier (.so)
 
-# Deploy verifier to Solana devnet (manual step)
-solana program deploy circuits/one/target/one.so \
+# Deploy verifier to Trezoa devnet (manual step)
+trezoa program deploy circuits/one/target/one.so \
   --keypair circuits/one/keypair/deployer.json \
   --program-id circuits/one/target/circuit_one-keypair.json \
   --url devnet
@@ -39,7 +39,7 @@ sunspot prove target/one.json target/one.gz target/one.ccs target/one.pk
 
 # Build and deploy verifier
 sunspot deploy target/one.vk
-solana program deploy target/one.so
+trezoa program deploy target/one.so
 
 # Test client
 cd client && npm install

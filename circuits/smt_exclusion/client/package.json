@@ -1,5 +1,5 @@
 {
-  "name": "@solana-noir-examples/smt-exclusion-client",
+  "name": "@trezoa-noir-examples/smt-exclusion-client",
   "version": "1.0.0",
   "type": "module",
   "scripts": {
@@ -7,10 +7,10 @@
     "test-transfer": "tsx test-transfer.ts"
   },
   "dependencies": {
-    "@solana/kit": "^5.1.0",
-    "@solana-program/compute-budget": "^0.11.0",
-    "@solana-program/system": "^0.10.0",
-    "@solana-noir-examples/lib": "file:../../../lib",
+    "@trezoa/kit": "^5.1.0",
+    "@trezoa-program/compute-budget": "^0.11.0",
+    "@trezoa-program/system": "^0.10.0",
+    "@trezoa-noir-examples/lib": "file:../../../lib",
     "circomlibjs": "^0.1.7",
     "ws": "^8.18.0"
   },

@@ -1,4 +1,4 @@
-import { address } from "@solana/kit";
+import { address } from "@trezoa/kit";
 import path from "path";
 import {
   generateProof,
@@ -18,9 +18,9 @@ import {
   verifyOnChain,
   printTransactionResult,
   handleVerifyError,
-} from "@solana-noir-examples/lib/verify";
+} from "@trezoa-noir-examples/lib/verify";
 
-const RPC_URL = process.env.RPC_URL || "https://api.devnet.solana.com";
+const RPC_URL = process.env.RPC_URL || "https://api.devnet.trezoa.com";
 
 // NOTE: This is a devnet example program ID. For production, deploy your own
 // verifier via `sunspot deploy` and set PROGRAM_ID environment variable.
@@ -54,7 +54,7 @@ Examples:
 }
 
 async function main() {
-  console.log("SMT Exclusion - Solana ZK Verifier Client\n");
+  console.log("SMT Exclusion - Trezoa ZK Verifier Client\n");
   console.log("Proves: pubkey is NOT in the blacklist SMT\n");
 
   await initPoseidon();

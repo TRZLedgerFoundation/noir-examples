@@ -22,7 +22,7 @@ Noir circuit that verifies an ECDSA secp256k1 signature without revealing the pu
 2. Off-chain: Prover shares `hashed_message` with verifier
 3. Verifier computes `poseidon(hashed_message)` and checks it matches `message_commitment`
 
-This approach reduces the public witness from ~1KB to 44 bytes, fitting within Solana's transaction size limits.
+This approach reduces the public witness from ~1KB to 44 bytes, fitting within Trezoa's transaction size limits.
 
 ## Quick Start
 
@@ -31,10 +31,10 @@ This approach reduces the public witness from ~1KB to 44 bytes, fitting within S
 just install-signer           # Install client dependencies
 just test-signer              # Run circuit tests
 just prove-signer             # Compile + execute + generate proof
-just build-verifier-signer    # Build Solana verifier (.so)
+just build-verifier-signer    # Build Trezoa verifier (.so)
 
-# Deploy verifier to Solana devnet (manual step)
-solana program deploy circuits/verify_signer/target/verify_signer.so \
+# Deploy verifier to Trezoa devnet (manual step)
+trezoa program deploy circuits/verify_signer/target/verify_signer.so \
   --keypair circuits/verify_signer/keypair/deployer.json \
   --program-id circuits/verify_signer/target/verify_signer-keypair.json \
   --url devnet
@@ -58,7 +58,7 @@ sunspot prove target/verify_signer.json target/verify_signer.gz \
 
 # Build and deploy verifier
 sunspot deploy target/verify_signer.vk
-solana program deploy target/verify_signer.so
+trezoa program deploy target/verify_signer.so
 
 # Test client
 cd client && npm install

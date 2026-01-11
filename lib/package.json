@@ -1,5 +1,5 @@
 {
-  "name": "@solana-noir-examples/lib",
+  "name": "@trezoa-noir-examples/lib",
   "version": "1.0.0",
   "type": "module",
   "exports": {
@@ -10,8 +10,8 @@
     "build": "tsc"
   },
   "dependencies": {
-    "@solana/kit": "^5.1.0",
-    "@solana-program/compute-budget": "^0.11.0",
+    "@trezoa/kit": "^5.1.0",
+    "@trezoa-program/compute-budget": "^0.11.0",
     "ws": "^8.18.0"
   },
   "devDependencies": {

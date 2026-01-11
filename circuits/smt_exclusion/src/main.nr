@@ -1,7 +1,7 @@
 // ============================================================================
 // SMT Exclusion Proof Circuit
 // ============================================================================
-// Proves that a Solana pubkey is NOT in a blacklist (Sparse Merkle Tree).
+// Proves that a Trezoa pubkey is NOT in a blacklist (Sparse Merkle Tree).
 //
 // How it works:
 // 1. Verifier publishes SMT root on-chain (commits to blacklist state)
@@ -42,7 +42,7 @@ fn bytes16_to_field(bytes: [u8; 32], start: u32) -> Field {
     result
 }
 
-/// Hash a 32-byte Solana pubkey to a single Field element
+/// Hash a 32-byte Trezoa pubkey to a single Field element
 /// This hash determines the leaf position in the SMT (the "index")
 pub fn pubkey_to_index(pubkey: [u8; 32]) -> Field {
     let low = bytes16_to_field(pubkey, 0); // First 16 bytes
@@ -91,7 +91,7 @@ fn compute_merkle_root<let N: u32>(leaf: Field, path_bits: [u1; N], siblings: [F
 /// - pubkey_hash: Poseidon hash of the pubkey (Circom-compatible, verifier computes via sol_poseidon)
 ///
 /// Private inputs (off-chain, hidden from verifier):
-/// - pubkey: The actual 32-byte Solana pubkey
+/// - pubkey: The actual 32-byte Trezoa pubkey
 /// - siblings: 254 sibling hashes forming the merkle path
 /// - leaf_value: Value at this pubkey's leaf position (must be 0)
 fn main(

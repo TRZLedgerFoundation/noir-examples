@@ -14,9 +14,9 @@ no-entrypoint = []
 default = []
 
 [dependencies]
-solana-program = "3.0.0"
-solana-system-interface = { version = "3.0.0", features = ["bincode"] }
-solana-poseidon = "3.0.0"
+trezoa-program = "3.0.0"
+trezoa-system-interface = { version = "3.0.0", features = ["bincode"] }
+trezoa-poseidon = "3.0.0"
 
 # Pin to avoid edition2024 requirement
 base64ct = "=1.6.0"
