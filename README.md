@@ -121,7 +121,7 @@ Each circuit follows the same workflow:
 
 > **Clone & Verify:** This repo includes pre-generated proving artifacts (`.ccs`, `.pk`, `.vk`, `.json`) that match the deployed devnet verifiers. You can clone and run `just verify-all` immediately—no Sunspot setup required. To modify circuits or deploy your own verifier, run `just setup-*` to regenerate keys.
 
-## Project Structure
+## Trezoa Structure
 
 ```
 ├── lib/                          # Shared TypeScript utilities
